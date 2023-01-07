@@ -266,7 +266,7 @@ ifeq "$(SUPPORTS_AVX512)" "True"
 	MULTIARCHOBJS +=  $(MULTIARCHSRCS:%.c=$(OBJDIR)/%_AVX512.o)
 endif
 			
-BINS = proxmark3 flasher fpga_compress
+BINS = hfmfhard
 WINBINS = $(patsubst %, %.exe, $(BINS))
 CLEAN = $(BINS) $(WINBINS) $(COREOBJS) $(CMDOBJS) $(OBJCOBJS) $(ZLIBOBJS) $(QTGUIOBJS) $(MULTIARCHOBJS) $(OBJDIR)/*.o *.moc.cpp ui/ui_overlays.h lualibs/usb_cmd.lua
 
@@ -274,7 +274,7 @@ CLEAN = $(BINS) $(WINBINS) $(COREOBJS) $(CMDOBJS) $(OBJCOBJS) $(ZLIBOBJS) $(QTGU
 all: lua_build jansson_build mbedtls_build cbor_build $(BINS)
 
 all-static: LDLIBS:=-static $(LDLIBS)
-all-static: proxmark3 flasher fpga_compress
+all-static: hfmfhard
 
 proxmark3: LDLIBS+=$(LUALIB) $(JANSSONLIB) $(MBEDTLSLIB) $(CBORLIB) $(QTLDLIBS) $(PCSC_LIBS)
 proxmark3: $(OBJDIR)/proxmark3.o $(COREOBJS) $(CMDOBJS) $(OBJCOBJS) $(QTGUIOBJS) $(MULTIARCHOBJS) $(ZLIBOBJS) lualibs/usb_cmd.lua
@@ -285,6 +285,12 @@ flasher: $(OBJDIR)/flash.o $(OBJDIR)/flasher.o $(COREOBJS) $(OBJCOBJS)
 
 fpga_compress: $(OBJDIR)/fpga_compress.o $(ZLIBOBJS)
 	$(LD) $(LDFLAGS) $(ZLIBFLAGS) $^ $(LDLIBS) -o $@
+
+hfmfhard: LDLIBS+=$(LUALIB) $(JANSSONLIB) $(MBEDTLSLIB) $(CBORLIB) $(QTLDLIBS) $(PCSC_LIBS)
+hfmfhard: $(OBJDIR)/hfmfhard.o $(CMDOBJS) $(COREOBJS) $(QTGUIOBJS) $(OBJCOBJS) $(ZLIBOBJS)
+	$(LD) $(LDFLAGS) $(OBJDIR)/hfmfhard.o $(CMDOBJS) $(COREOBJS) $(QTGUIOBJS) $(LDLIBS) $(OBJCOBJS) $(ZLIBOBJS) -o $@
+
+
 
 proxgui.cpp: ui/ui_overlays.h
 
@@ -373,7 +379,7 @@ $(OBJDIR)/%.o : %.m $(OBJDIR)/%.d
 DEPENDENCY_FILES = $(patsubst %.c, $(OBJDIR)/%.d, $(CORESRCS) $(CMDSRCS) $(ZLIBSRCS) $(MULTIARCHSRCS)) \
 	$(patsubst %.cpp, $(OBJDIR)/%.d, $(QTGUISRCS)) \
 	$(patsubst %.m, $(OBJDIR)/%.d, $(OBJCSRCS)) \
-	$(OBJDIR)/proxmark3.d $(OBJDIR)/flash.d $(OBJDIR)/flasher.d $(OBJDIR)/fpga_compress.d
+	$(OBJDIR)/proxmark3.d $(OBJDIR)/flash.d $(OBJDIR)/flasher.d $(OBJDIR)/fpga_compress.d $(OBJDIR)/hfmfhard.d
 
 $(DEPENDENCY_FILES): ;
 .PRECIOUS: $(DEPENDENCY_FILES)

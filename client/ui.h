@@ -23,7 +23,6 @@ void ShowGraphWindow(void);
 void RepaintGraphWindow(void);
 void PrintAndLog(char *fmt, ...);
 void PrintAndLogEx(logLevel_t level, char *fmt, ...);
-void SetLogFilename(char *fn);
 void SetFlushAfterWrite(bool flush_after_write);
 
 extern double CursorScaleFactor;

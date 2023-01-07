@@ -29,8 +29,6 @@ int GridOffset = 0;
 bool GridLocked = false;
 bool showDemod = true;
 
-static char *logfilename = "proxmark3.log";
-
 #ifndef EXTERNAL_PRINTANDLOG
 static pthread_mutex_t print_lock = PTHREAD_MUTEX_INITIALIZER;
 
@@ -110,19 +108,9 @@ void PrintAndLog(char *fmt, ...)
 	char *saved_line;
 	int saved_point;
 	va_list argptr, argptr2;
-	static FILE *logfile = NULL;
-	static int logging=1;
 
 	// lock this section to avoid interlacing prints from different threads
 	pthread_mutex_lock(&print_lock);
-  
-	if (logging && !logfile) {
-		logfile=fopen(logfilename, "a");
-		if (!logfile) {
-			fprintf(stderr, "Can't open logfile, logging disabled!\n");
-			logging=0;
-		}
-	}
 
 	// If there is an incoming message from the hardware (eg: lf hid read) in
 	// the background (while the prompt is displayed and accepting user input),
@@ -157,12 +145,7 @@ void PrintAndLog(char *fmt, ...)
 		free(saved_line);
 	}
 #endif
-	
-	if (logging && logfile) {
-		vfprintf(logfile, fmt, argptr2);
-		fprintf(logfile,"\n");
-		fflush(logfile);
-	}
+
 	va_end(argptr2);
 
 	if (flushAfterWrite)  //buzzy
@@ -173,11 +156,6 @@ void PrintAndLog(char *fmt, ...)
 	pthread_mutex_unlock(&print_lock);  
 }
 #endif
-
-void SetLogFilename(char *fn)
-{
-  logfilename = fn;
-}
 
 void SetFlushAfterWrite(bool flush_after_write) {
 	flushAfterWrite = flush_after_write;

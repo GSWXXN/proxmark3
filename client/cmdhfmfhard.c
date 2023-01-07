@@ -100,12 +100,8 @@ static void print_progress_header(void) {
 	char progress_text[80];
 	char instr_set[12] = {0};
 	get_SIMD_instruction_set(instr_set);
-	sprintf(progress_text, "Start using %d threads and %s SIMD core", num_CPUs(), instr_set);
-	PrintAndLog("\n\n");
-	PrintAndLog(" time    | #nonces | Activity                                                | expected to brute force");
-	PrintAndLog("         |         |                                                         | #states         | time ");
-	PrintAndLog("------------------------------------------------------------------------------------------------------");
-	PrintAndLog("       0 |       0 | %-55s |                 |", progress_text);
+	sprintf(progress_text, "Start using %d threads", num_CPUs());
+	PrintAndLog("%-55s", progress_text);
 }
 
 
@@ -113,19 +109,7 @@ void hardnested_print_progress(uint32_t nonces, char *activity, float brute_forc
 	static uint64_t last_print_time = 0;
 	if (msclock() - last_print_time > min_diff_print_time) {
 		last_print_time = msclock();
-		uint64_t total_time = msclock() - start_time;
-		float brute_force_time = brute_force / brute_force_per_second;
-		char brute_force_time_string[20];
-		if (brute_force_time < 90) {
-			sprintf(brute_force_time_string, "%2.0fs", brute_force_time);
-		} else if (brute_force_time < 60 * 90) {
-			sprintf(brute_force_time_string, "%2.0fmin", brute_force_time/60);
-		} else if (brute_force_time < 60 * 60 * 36) {
-			sprintf(brute_force_time_string, "%2.0fh", brute_force_time/(60*60));
-		} else {
-			sprintf(brute_force_time_string, "%2.0fd", brute_force_time/(60*60*24));
-		}
-		PrintAndLog(" %7.0f | %7d | %-55s | %15.0f | %5s", (float)total_time/1000.0, nonces, activity, brute_force, brute_force_time_string);
+		PrintAndLog("%-55s",activity);
 	}
 }
 
@@ -2509,7 +2493,6 @@ int mfnestedhard(uint8_t blockNo, uint8_t keyType, uint8_t *key, uint8_t trgBloc
 	
 	char instr_set[12] = {0};
 	get_SIMD_instruction_set(instr_set);
-	PrintAndLog("Using %s SIMD core.", instr_set);
 
 	srand((unsigned) time(NULL));
 	brute_force_per_second = brute_force_benchmark();

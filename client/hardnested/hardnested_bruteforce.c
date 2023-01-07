@@ -55,7 +55,7 @@ THE SOFTWARE.
 #include <pthread.h>
 #include <string.h>
 #include <stdlib.h>
-#include "proxmark3.h"
+#include "hfmfhard.h"
 #include "cmdhfmfhard.h"
 #include "hardnested_bf_core.h"
 #include "ui.h"
