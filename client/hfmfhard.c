@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "cmdhfmfhard.h"
 #include "whereami.h"
+#include "ui.h"
 
 
 static char *my_executable_directory = NULL;
@@ -40,6 +41,7 @@ int main(int argc, char *argv[]) {
     bool nonce_file_read = true;
 
     set_my_executable_path();
+    SetFlushAfterWrite(true);
 
     int isOK = mfnestedhard(blockNo, keyType, key, trgBlockNo, trgKeyType, NULL,
                                 nonce_file_read, false, false, tests);
