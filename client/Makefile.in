@@ -9,6 +9,7 @@ CXX = g++
 LD = g++
 TAR = tar
 TARFLAGS = -C .. --ignore-failed-read -rvf
+BIN = @prefix@/bin
 RM = rm -f
 MV = mv
 
@@ -309,6 +310,11 @@ clean:
 	cd $(JANSSONLIBPATH) && make clean
 	cd $(MBEDTLSLIBPATH) && make clean
 	cd $(CBORLIBPATH) && make clean
+install:
+	install -m 755 ./hfmfhard $(BIN)
+	cp -r ./hardnested $(BIN)
+	$(RM) $(BIN)/hardnested/*.c
+	$(RM) $(BIN)/hardnested/*.h
 
 tarbin: $(BINS)
 	$(TAR) $(TARFLAGS) ../proxmark3-$(platform)-bin.tar $(BINS:%=client/%) $(WINBINS:%=client/%)
